@@ -1,0 +1,971 @@
+/* =========================================================
+   The SSG — Admin Stylesheet
+   ========================================================= */
+
+:root {
+	--fort-blue:    #3b82f6;
+	--fort-blue-dk: #1d4ed8;
+	--fort-red:     #ef4444;
+	--fort-orange:  #f97316;
+	--fort-green:   #22c55e;
+	--fort-gray:    #6b7280;
+	--fort-slate:   #1e293b;
+	--fort-bg:      #f1f5f9;
+	--fort-white:   #ffffff;
+	--fort-border:  #e2e8f0;
+	--fort-text:    #0f172a;
+	--fort-text-2:  #475569;
+	--fort-radius:  10px;
+	--fort-shadow:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+	--fort-shadow-md: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -2px rgba(0,0,0,.1);
+}
+
+/* ── Layout ─────────────────────────────────────────────── */
+
+.fortress-wrap {
+	margin: 0;
+	padding: 20px 20px 40px;
+	background: var(--fort-bg);
+	min-height: 100vh;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	color: var(--fort-text);
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+
+.fort-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: var(--fort-slate);
+	border-radius: var(--fort-radius);
+	padding: 16px 24px;
+	margin-bottom: 20px;
+	box-shadow: var(--fort-shadow-md);
+}
+
+.fort-header-brand {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
+
+.fort-shield-icon {
+	font-size: 28px;
+	line-height: 1;
+}
+
+.fort-header-title {
+	color: #fff !important;
+	font-size: 20px !important;
+	font-weight: 700 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	line-height: 1.2;
+}
+
+.fort-header-sub {
+	color: #94a3b8;
+	font-size: 12px;
+	margin: 2px 0 0;
+}
+
+.fort-nav {
+	display: flex;
+	gap: 4px;
+}
+
+.fort-nav-link {
+	display: inline-block;
+	padding: 6px 14px;
+	border-radius: 6px;
+	color: #94a3b8 !important;
+	font-size: 13px;
+	font-weight: 500;
+	text-decoration: none !important;
+	transition: background .15s, color .15s;
+}
+
+.fort-nav-link:hover,
+.fort-nav-link.active {
+	background: rgba(255,255,255,.12);
+	color: #fff !important;
+}
+
+/* ── Status bar ─────────────────────────────────────────── */
+
+.fort-statusbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 20px;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.fort-status-pill {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 16px;
+	border-radius: 999px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.fort-status-pill.active   { background: #dcfce7; color: #15803d; }
+.fort-status-pill.inactive { background: #fee2e2; color: #991b1b; }
+
+.fort-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: currentColor;
+	animation: fort-pulse 2s infinite;
+}
+
+@keyframes fort-pulse {
+	0%, 100% { opacity: 1; }
+	50%       { opacity: .4; }
+}
+
+.fort-status-badges {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+/* ── Cards ──────────────────────────────────────────────── */
+
+.fort-card {
+	background: var(--fort-white);
+	border-radius: var(--fort-radius);
+	box-shadow: var(--fort-shadow);
+	border: 1px solid var(--fort-border);
+	margin-bottom: 20px;
+	overflow: hidden;
+}
+
+.fort-card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 20px;
+	border-bottom: 1px solid var(--fort-border);
+	background: #fafafa;
+}
+
+.fort-card-header h3 {
+	font-size: 15px !important;
+	font-weight: 600 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	color: var(--fort-text) !important;
+}
+
+.fort-danger-card { border-left: 4px solid var(--fort-red); }
+
+/* ── Grid layouts ───────────────────────────────────────── */
+
+.fort-grid-4 {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 16px;
+	margin-bottom: 20px;
+}
+
+.fort-grid-2 {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+	gap: 20px;
+}
+
+/* ── Stat cards ─────────────────────────────────────────── */
+
+.fort-stat-card {
+	display: flex;
+	align-items: center;
+	padding: 20px;
+	gap: 16px;
+	margin-bottom: 0;
+}
+
+.fort-stat-icon {
+	font-size: 24px;
+	width: 48px;
+	height: 48px;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.fort-stat-icon.blue   { background: #dbeafe; }
+.fort-stat-icon.orange { background: #ffedd5; }
+.fort-stat-icon.red    { background: #fee2e2; }
+.fort-stat-icon.gray   { background: #f1f5f9; }
+
+.fort-stat-num {
+	font-size: 28px;
+	font-weight: 700;
+	line-height: 1;
+	color: var(--fort-text);
+}
+
+.fort-stat-label {
+	font-size: 12px;
+	color: var(--fort-text-2);
+	margin-top: 4px;
+}
+
+/* ── Badges ─────────────────────────────────────────────── */
+
+.fort-badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 3px 10px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.fort-badge.on,
+.fort-badge.green  { background: #dcfce7; color: #15803d; }
+.fort-badge.off,
+.fort-badge.gray   { background: #f1f5f9; color: #64748b; }
+.fort-badge.red    { background: #fee2e2; color: #b91c1c; }
+.fort-badge.orange { background: #ffedd5; color: #c2410c; }
+.fort-badge.blue   { background: #dbeafe; color: #1d4ed8; }
+
+.fort-count-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--fort-blue);
+	color: #fff;
+	border-radius: 999px;
+	padding: 1px 8px;
+	font-size: 11px;
+	font-weight: 600;
+	margin-left: 8px;
+}
+
+/* ── Threat tags & score ────────────────────────────────── */
+
+.fort-threat-tag {
+	display: inline-block;
+	background: #fff1f2;
+	color: #be123c;
+	border: 1px solid #fecdd3;
+	border-radius: 4px;
+	padding: 1px 6px;
+	font-size: 10px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: .3px;
+	margin-right: 3px;
+}
+
+.fort-clean-tag {
+	display: inline-block;
+	color: #64748b;
+	font-size: 11px;
+}
+
+.fort-score {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 28px;
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 700;
+}
+
+.fort-score.high { background: #fee2e2; color: #b91c1c; }
+.fort-score.med  { background: #ffedd5; color: #c2410c; }
+.fort-score.low  { background: #fef9c3; color: #854d0e; }
+
+/* ── Tables ─────────────────────────────────────────────── */
+
+.fort-table-wrap { overflow-x: auto; }
+
+.fort-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.fort-table th {
+	background: #f8fafc;
+	color: #64748b;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: .5px;
+	padding: 10px 12px;
+	text-align: left;
+	border-bottom: 2px solid var(--fort-border);
+	white-space: nowrap;
+}
+
+.fort-table td {
+	padding: 10px 12px;
+	border-bottom: 1px solid #f1f5f9;
+	vertical-align: middle;
+}
+
+.fort-table tr:last-child td { border-bottom: none; }
+.fort-table tr:hover td { background: #fafafa; }
+
+.fort-table tr.row-sus  td { background: #fffbeb; }
+.fort-table tr.row-sus:hover td { background: #fef3c7; }
+.fort-table tr.row-blocked td { background: #fff1f2; }
+.fort-table tr.row-blocked:hover td { background: #ffe4e6; }
+
+/* ── Logs table specifics ───────────────────────────────── */
+
+.fort-logs-table { min-width: 900px; }
+
+.fort-uri {
+	max-width: 220px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-family: 'SFMono-Regular', Consolas, monospace;
+	font-size: 11px;
+	color: #475569;
+}
+
+.fort-ua {
+	max-width: 160px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 11px;
+	color: #94a3b8;
+}
+
+.fort-time {
+	white-space: nowrap;
+	color: var(--fort-text-2);
+	font-size: 12px;
+}
+
+.fort-ip-link {
+	color: var(--fort-blue) !important;
+	font-family: 'SFMono-Regular', Consolas, monospace;
+	font-size: 12px;
+	text-decoration: none !important;
+	font-weight: 600;
+}
+
+.fort-ip-link:hover { text-decoration: underline !important; }
+
+.fort-method {
+	display: inline-block;
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-size: 10px;
+	font-weight: 700;
+	font-family: monospace;
+}
+
+.fort-method.get  { background: #dbeafe; color: #1d4ed8; }
+.fort-method.post { background: #dcfce7; color: #15803d; }
+.fort-method.put  { background: #fef9c3; color: #854d0e; }
+.fort-method.delete { background: #fee2e2; color: #b91c1c; }
+
+/* ── Bar chart ──────────────────────────────────────────── */
+
+.fort-bar-list { padding: 16px 20px; }
+
+.fort-bar-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 10px;
+	font-size: 12px;
+}
+
+.fort-bar-label {
+	width: 150px;
+	flex-shrink: 0;
+	color: var(--fort-text-2);
+	text-transform: capitalize;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.fort-bar-track {
+	flex: 1;
+	background: #f1f5f9;
+	border-radius: 999px;
+	height: 8px;
+	overflow: hidden;
+}
+
+.fort-bar-fill {
+	height: 100%;
+	background: linear-gradient(90deg, var(--fort-blue), #6366f1);
+	border-radius: 999px;
+	transition: width .4s;
+}
+
+.fort-bar-count {
+	width: 36px;
+	text-align: right;
+	color: var(--fort-text-2);
+	font-weight: 600;
+}
+
+/* ── Action buttons list ────────────────────────────────── */
+
+.fort-action-list {
+	padding: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.fort-action-btn {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px 16px;
+	border-radius: 8px;
+	text-decoration: none !important;
+	font-size: 13px;
+	font-weight: 500;
+	transition: opacity .15s, transform .1s;
+}
+
+.fort-action-btn:hover { opacity: .85; transform: translateX(2px); }
+.fort-action-btn span  { font-size: 16px; }
+
+.fort-action-btn.blue   { background: #eff6ff; color: #1d4ed8 !important; border: 1px solid #bfdbfe; }
+.fort-action-btn.gray   { background: #f8fafc; color: #374151 !important; border: 1px solid #e5e7eb; }
+.fort-action-btn.orange { background: #fff7ed; color: #9a3412 !important; border: 1px solid #fed7aa; }
+.fort-action-btn.red    { background: #fff1f2; color: #9f1239 !important; border: 1px solid #fecdd3; }
+
+/* ── Buttons ─────────────────────────────────────────────── */
+
+.fort-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 7px 16px;
+	border-radius: 6px;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	border: none;
+	text-decoration: none !important;
+	transition: filter .15s;
+	line-height: 1.4;
+}
+
+.fort-btn:hover { filter: brightness(.92); }
+
+.fort-btn.blue        { background: var(--fort-blue); color: #fff !important; }
+.fort-btn.blue-outline { background: transparent; color: var(--fort-blue) !important; border: 1.5px solid var(--fort-blue); }
+.fort-btn.gray-outline { background: transparent; color: #64748b !important; border: 1.5px solid #cbd5e1; }
+.fort-btn.red-outline  { background: transparent; color: var(--fort-red) !important; border: 1.5px solid var(--fort-red); }
+.fort-btn.gray         { background: #f1f5f9; color: #374151 !important; border: 1px solid #e2e8f0; }
+.fort-btn-lg           { padding: 10px 24px; font-size: 14px; }
+.fort-btn:disabled     { opacity: .5; cursor: not-allowed; }
+
+.fort-btn-xs {
+	display: inline-flex;
+	align-items: center;
+	padding: 3px 8px;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+	cursor: pointer;
+	border: none;
+	text-decoration: none !important;
+	transition: filter .15s;
+}
+
+.fort-btn-xs:hover   { filter: brightness(.9); }
+.fort-btn-xs.green   { background: #dcfce7; color: #15803d; }
+.fort-btn-xs.orange  { background: #ffedd5; color: #c2410c; }
+.fort-btn-xs.red     { background: #fee2e2; color: #b91c1c; }
+.fort-btn-xs.blue    { background: #dbeafe; color: #1d4ed8; }
+
+.fort-header-actions {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.fort-link-sm {
+	font-size: 12px;
+	color: var(--fort-blue) !important;
+	text-decoration: none !important;
+}
+
+/* ── Filter bar ──────────────────────────────────────────── */
+
+.fort-filter-bar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 14px 16px;
+	border-bottom: 1px solid var(--fort-border);
+	background: #fafafa;
+	align-items: center;
+}
+
+.fort-input-sm {
+	height: 34px;
+	padding: 0 10px;
+	border: 1.5px solid #e2e8f0;
+	border-radius: 6px;
+	font-size: 12px;
+	color: var(--fort-text);
+	background: #fff;
+	outline: none;
+	min-width: 120px;
+}
+
+.fort-input-sm:focus { border-color: var(--fort-blue); }
+
+.fort-select-sm {
+	height: 34px;
+	padding: 0 8px;
+	border: 1.5px solid #e2e8f0;
+	border-radius: 6px;
+	font-size: 12px;
+	color: var(--fort-text);
+	background: #fff;
+	outline: none;
+	cursor: pointer;
+}
+
+.fort-select-sm:focus { border-color: var(--fort-blue); }
+
+/* ── Pagination ──────────────────────────────────────────── */
+
+.fort-pagination {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px 16px;
+	border-top: 1px solid var(--fort-border);
+}
+
+.fort-page-btn {
+	display: inline-flex;
+	padding: 5px 12px;
+	border: 1.5px solid var(--fort-border);
+	border-radius: 6px;
+	font-size: 12px;
+	color: var(--fort-text) !important;
+	text-decoration: none !important;
+	background: #fff;
+}
+
+.fort-page-btn:hover { border-color: var(--fort-blue); color: var(--fort-blue) !important; }
+
+.fort-page-info {
+	font-size: 12px;
+	color: var(--fort-text-2);
+}
+
+/* ── Forms ───────────────────────────────────────────────── */
+
+.fort-form {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.fort-form-row {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.fort-form-row label {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--fort-text);
+}
+
+.fort-input {
+	height: 38px;
+	padding: 0 12px;
+	border: 1.5px solid #e2e8f0;
+	border-radius: 6px;
+	font-size: 13px;
+	color: var(--fort-text);
+	background: #fff;
+	outline: none;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.fort-input:focus { border-color: var(--fort-blue); box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
+.fort-input[readonly] { background: #f8fafc; color: #64748b; }
+
+.fort-input-num {
+	height: 38px;
+	padding: 0 12px;
+	border: 1.5px solid #e2e8f0;
+	border-radius: 6px;
+	font-size: 13px;
+	width: 100px;
+	outline: none;
+	text-align: center;
+}
+
+.fort-input-num:focus { border-color: var(--fort-blue); }
+
+.fort-optional { color: #94a3b8; font-weight: 400; font-size: 11px; }
+
+/* ── Copy box ────────────────────────────────────────────── */
+
+.fort-copy-box {
+	display: flex;
+	gap: 8px;
+	margin: 12px 0;
+}
+
+/* ── Settings ────────────────────────────────────────────── */
+
+.fort-settings-grid {
+	padding: 4px 0;
+}
+
+.fort-setting-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	padding: 16px 20px;
+	border-bottom: 1px solid #f1f5f9;
+}
+
+.fort-setting-row:last-child { border-bottom: none; }
+
+.fort-setting-row.compact {
+	padding: 12px 20px;
+}
+
+.fort-setting-info {
+	flex: 1;
+}
+
+.fort-setting-info strong {
+	font-size: 13px;
+	font-weight: 600;
+	display: block;
+	margin-bottom: 3px;
+}
+
+.fort-setting-info p {
+	font-size: 12px;
+	color: var(--fort-text-2);
+	margin: 0;
+}
+
+.fort-setting-info code {
+	background: #f1f5f9;
+	padding: 1px 5px;
+	border-radius: 3px;
+	font-size: 11px;
+}
+
+.fort-setting-section-title {
+	padding: 12px 20px 4px;
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .6px;
+	color: #94a3b8;
+	border-bottom: 1px solid #f1f5f9;
+}
+
+/* ── Toggle switch ───────────────────────────────────────── */
+
+.fort-toggle {
+	position: relative;
+	display: inline-block;
+	width: 44px;
+	height: 24px;
+	flex-shrink: 0;
+	cursor: pointer;
+}
+
+.fort-toggle input { opacity: 0; width: 0; height: 0; }
+
+.fort-toggle-slider {
+	position: absolute;
+	inset: 0;
+	background: #cbd5e1;
+	border-radius: 999px;
+	transition: background .2s;
+}
+
+.fort-toggle-slider::before {
+	content: '';
+	position: absolute;
+	width: 18px;
+	height: 18px;
+	background: #fff;
+	border-radius: 50%;
+	left: 3px;
+	top: 3px;
+	transition: transform .2s;
+	box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+
+.fort-toggle input:checked + .fort-toggle-slider { background: var(--fort-blue); }
+.fort-toggle input:checked + .fort-toggle-slider::before { transform: translateX(20px); }
+
+/* ── Notices ─────────────────────────────────────────────── */
+
+.fort-notice {
+	padding: 12px 16px;
+	border-radius: 8px;
+	font-size: 13px;
+	margin-bottom: 16px;
+	border-left: 4px solid;
+}
+
+.fort-notice.success { background: #f0fdf4; border-color: var(--fort-green);  color: #15803d; }
+.fort-notice.info    { background: #eff6ff; border-color: var(--fort-blue);   color: #1d4ed8; }
+.fort-notice.warning { background: #fff7ed; border-color: var(--fort-orange); color: #c2410c; }
+.fort-notice.error   { background: #fff1f2; border-color: var(--fort-red);    color: #b91c1c; }
+
+/* ── Misc ────────────────────────────────────────────────── */
+
+.fort-empty {
+	padding: 32px;
+	text-align: center;
+	color: #94a3b8;
+	font-size: 13px;
+}
+
+.fort-actions { display: flex; gap: 6px; }
+
+.fort-text-sm  { font-size: 13px; color: var(--fort-text-2); padding: 0 20px; margin: 0; }
+.fort-text-xs  { font-size: 11px; padding: 0 20px 16px; margin: 0; }
+
+/* ── Scanner ─────────────────────────────────────────────── */
+
+.fort-scan-hero {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 20px;
+	padding: 24px;
+}
+
+.fort-scan-title {
+	font-size: 18px;
+	font-weight: 700;
+	margin-bottom: 6px;
+}
+
+.fort-scan-sub {
+	font-size: 13px;
+	color: var(--fort-text-2);
+	max-width: 520px;
+	line-height: 1.5;
+}
+
+.fort-scan-meta {
+	margin-top: 10px;
+	font-size: 12px;
+	color: #94a3b8;
+}
+
+.fort-scan-hero-right {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 10px;
+	flex-shrink: 0;
+}
+
+.fort-scan-scope {
+	display: flex;
+	gap: 14px;
+	font-size: 12px;
+	color: var(--fort-text-2);
+}
+
+.fort-scan-scope label {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	cursor: pointer;
+}
+
+.fort-scan-progress {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 20px 24px;
+	background: #eff6ff;
+	border: 1.5px solid #bfdbfe;
+}
+
+.fort-scan-progress-sub {
+	font-size: 12px;
+	color: #3b82f6;
+	margin-top: 4px;
+}
+
+.fort-scan-spinner {
+	width: 28px;
+	height: 28px;
+	border: 3px solid #bfdbfe;
+	border-top-color: #3b82f6;
+	border-radius: 50%;
+	animation: fort-spin 0.7s linear infinite;
+	flex-shrink: 0;
+}
+
+@keyframes fort-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* Findings */
+
+.fort-finding {
+	border-bottom: 1px solid #f1f5f9;
+	transition: background .1s;
+}
+
+.fort-finding:last-child { border-bottom: none; }
+
+.fort-finding-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 20px 0;
+}
+
+.fort-finding-meta {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.fort-finding-sev {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 3px 10px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 700;
+}
+
+.fort-finding-sev.critical { background: #fee2e2; color: #b91c1c; }
+.fort-finding-sev.warning  { background: #ffedd5; color: #c2410c; }
+.fort-finding-sev.info     { background: #dbeafe; color: #1d4ed8; }
+
+.fort-finding-cat,
+.fort-finding-source {
+	font-size: 11px;
+	color: #64748b;
+	background: #f1f5f9;
+	padding: 2px 8px;
+	border-radius: 4px;
+}
+
+.fort-finding-body {
+	padding: 10px 20px 16px;
+}
+
+.fort-finding-title {
+	font-size: 14px;
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.fort-finding-desc {
+	font-size: 12px;
+	color: var(--fort-text-2);
+	margin-bottom: 10px;
+	line-height: 1.5;
+}
+
+.fort-finding-location,
+.fort-finding-snippet {
+	font-size: 12px;
+	margin-bottom: 6px;
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+}
+
+.fort-loc-label {
+	color: #94a3b8;
+	flex-shrink: 0;
+	padding-top: 1px;
+}
+
+.fort-finding-location code {
+	background: #f1f5f9;
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-size: 11px;
+	word-break: break-all;
+}
+
+.fort-finding-snippet pre {
+	background: #1e293b;
+	color: #f1f5f9;
+	padding: 8px 12px;
+	border-radius: 6px;
+	font-size: 11px;
+	overflow-x: auto;
+	margin: 0;
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.finding-critical .fort-finding-body { border-left: 3px solid #ef4444; margin-left: 20px; padding-left: 14px; }
+.finding-warning  .fort-finding-body { border-left: 3px solid #f97316; margin-left: 20px; padding-left: 14px; }
+.finding-info     .fort-finding-body { border-left: 3px solid #3b82f6; margin-left: 20px; padding-left: 14px; }
+.finding-dismissed                   { opacity: .5; }
+
+.fort-dismissed-section {
+	margin-top: 8px;
+}
+
+.fort-dismissed-section summary {
+	cursor: pointer;
+	padding: 10px 0;
+	font-size: 13px;
+	color: var(--fort-text-2);
+}
+
+.fort-dismissed-section summary:hover { color: var(--fort-text); }
+
+.fort-finding.hidden { display: none; }
+
+.fort-btn-sm { padding: 5px 12px; font-size: 12px; }
+
+/* ── Responsive ──────────────────────────────────────────── */
+
+@media ( max-width: 782px ) {
+	.fort-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+	.fort-grid-4 { grid-template-columns: repeat(2, 1fr); }
+	.fort-grid-2 { grid-template-columns: 1fr; }
+	.fort-filter-bar { flex-direction: column; align-items: stretch; }
+	.fort-input-sm, .fort-select-sm { min-width: 100%; }
+	.fort-stat-card { padding: 14px; }
+}
