@@ -21,10 +21,10 @@ $result = Fortress_DB::get_logs( [
 	'search'     => $search,
 ] );
 
-$total      = $result['total'];
-$rows       = $result['rows'];
+$total       = $result['total'];
+$rows        = $result['rows'];
 $total_pages = max( 1, ceil( $total / $per_page ) );
-$base_url   = admin_url( 'admin.php?page=fortress-logs' );
+$base_url    = admin_url( 'admin.php?page=fortress-logs' );
 
 function fort_logs_url( array $extra = [] ) : string {
 	$params = array_filter( array_merge( [
@@ -62,8 +62,8 @@ function fort_logs_url( array $extra = [] ) : string {
 		<!-- Filters -->
 		<form method="get" class="fort-filter-bar">
 			<input type="hidden" name="page" value="fortress-logs">
-			<input type="text"   name="ip"        class="fort-input-sm" placeholder="Filter IP..." value="<?php echo esc_attr( $ip_filter ); ?>">
-			<input type="text"   name="search"    class="fort-input-sm" placeholder="Search URI / UA..." value="<?php echo esc_attr( $search ); ?>">
+			<input type="text"   name="ip"        class="fort-input-sm" placeholder="Filter IP..."         value="<?php echo esc_attr( $ip_filter ); ?>">
+			<input type="text"   name="search"    class="fort-input-sm" placeholder="Search URI / UA..."   value="<?php echo esc_attr( $search ); ?>">
 			<input type="date"   name="date_from" class="fort-input-sm" value="<?php echo esc_attr( $date_from ); ?>">
 			<input type="date"   name="date_to"   class="fort-input-sm" value="<?php echo esc_attr( $date_to ); ?>">
 			<select name="suspicious" class="fort-select-sm">
@@ -89,19 +89,24 @@ function fort_logs_url( array $extra = [] ) : string {
 					<tr>
 						<th>Time</th>
 						<th>IP</th>
+						<th>Username</th>
 						<th>Method</th>
 						<th>URI</th>
 						<th>Threat</th>
 						<th>Score</th>
 						<th>Status</th>
 						<th>User Agent</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 				<?php foreach ( $rows as $row ) :
-					$is_sus = (int) $row->is_suspicious;
-					$is_blk = (int) $row->blocked;
+					$is_sus   = (int) $row->is_suspicious;
+					$is_blk   = (int) $row->blocked;
 					$row_class = $is_blk ? 'row-blocked' : ( $is_sus ? 'row-sus' : '' );
+					$username  = isset( $row->attempted_username ) && $row->attempted_username
+					             ? $row->attempted_username
+					             : ( $row->user_id ? get_userdata( $row->user_id )->user_login ?? '—' : '—' );
 				?>
 					<tr class="<?php echo $row_class; ?>">
 						<td class="fort-time" title="<?php echo esc_attr( $row->log_time ); ?>">
@@ -111,6 +116,18 @@ function fort_logs_url( array $extra = [] ) : string {
 							<a href="<?php echo esc_url( fort_logs_url( [ 'ip' => $row->ip_address, 'paged' => 1 ] ) ); ?>" class="fort-ip-link">
 								<?php echo esc_html( $row->ip_address ); ?>
 							</a>
+						</td>
+						<td>
+							<?php if ( isset( $row->attempted_username ) && $row->attempted_username ) : ?>
+								<span class="fort-threat-tag" style="background:rgba(239,68,68,.15);color:#ef4444">
+									<?php echo esc_html( $row->attempted_username ); ?>
+								</span>
+							<?php elseif ( $row->user_id ) : ?>
+								<?php $u = get_userdata( $row->user_id ); ?>
+								<span style="color:#94a3b8;font-size:12px"><?php echo esc_html( $u ? $u->user_login : '—' ); ?></span>
+							<?php else : ?>
+								<span style="color:#475569">—</span>
+							<?php endif; ?>
 						</td>
 						<td><span class="fort-method <?php echo strtolower( $row->request_method ); ?>"><?php echo esc_html( $row->request_method ); ?></span></td>
 						<td class="fort-uri" title="<?php echo esc_attr( $row->request_uri ); ?>">
@@ -128,10 +145,10 @@ function fort_logs_url( array $extra = [] ) : string {
 						<td>
 							<?php
 							$sc = (int) $row->threat_score;
-							if ( $sc >= 60 )      echo "<span class='fort-score high'>{$sc}</span>";
-							elseif ( $sc >= 30 )  echo "<span class='fort-score med'>{$sc}</span>";
-							elseif ( $sc > 0 )    echo "<span class='fort-score low'>{$sc}</span>";
-							else                  echo '—';
+							if ( $sc >= 60 )     echo "<span class='fort-score high'>{$sc}</span>";
+							elseif ( $sc >= 30 ) echo "<span class='fort-score med'>{$sc}</span>";
+							elseif ( $sc > 0 )   echo "<span class='fort-score low'>{$sc}</span>";
+							else                 echo '—';
 							?>
 						</td>
 						<td>
@@ -145,6 +162,29 @@ function fort_logs_url( array $extra = [] ) : string {
 						</td>
 						<td class="fort-ua" title="<?php echo esc_attr( $row->user_agent ); ?>">
 							<?php echo esc_html( mb_substr( $row->user_agent, 0, 50 ) ); ?>
+						</td>
+						<td class="fort-actions" style="white-space:nowrap">
+							<!-- Blacklist IP from log row -->
+							<?php if ( ! Fortress_DB::is_ip_blacklisted( $row->ip_address ) ) : ?>
+								<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>" style="display:inline"
+								      onsubmit="return confirm('Blacklist IP <?php echo esc_attr( $row->ip_address ); ?>?')">
+									<?php wp_nonce_field( 'fortress_add_blacklist' ); ?>
+									<input type="hidden" name="action"     value="fortress_add_blacklist">
+									<input type="hidden" name="ip_address" value="<?php echo esc_attr( $row->ip_address ); ?>">
+									<input type="hidden" name="label"      value="Blocked from log #<?php echo (int) $row->id; ?>">
+									<button type="submit" class="fort-btn-xs red" title="Blacklist this IP">🚫 Block</button>
+								</form>
+							<?php else : ?>
+								<span class="fort-badge red" style="font-size:10px">Blacklisted</span>
+							<?php endif; ?>
+							<!-- Delete log entry -->
+							<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>" style="display:inline"
+							      onsubmit="return confirm('Delete this log entry?')">
+								<?php wp_nonce_field( 'fortress_delete_log' ); ?>
+								<input type="hidden" name="action" value="fortress_delete_log">
+								<input type="hidden" name="log_id" value="<?php echo (int) $row->id; ?>">
+								<button type="submit" class="fort-btn-xs gray" title="Delete this log entry">🗑️</button>
+							</form>
 						</td>
 					</tr>
 				<?php endforeach; ?>

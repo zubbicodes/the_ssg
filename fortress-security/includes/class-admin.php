@@ -15,15 +15,23 @@ class Fortress_Admin {
 	public function init() {
 		add_action( 'admin_menu',            [ $this, 'register_menus' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
-		add_action( 'admin_post_fortress_save_settings', [ $this, 'handle_save_settings' ] );
-		add_action( 'admin_post_fortress_add_ip',        [ $this, 'handle_add_ip' ] );
-		add_action( 'admin_post_fortress_remove_ip',     [ $this, 'handle_remove_ip' ] );
-		add_action( 'admin_post_fortress_toggle_ip',     [ $this, 'handle_toggle_ip' ] );
-		add_action( 'wp_ajax_fortress_test_discord',     [ $this, 'ajax_test_discord' ] );
-		add_action( 'admin_post_fortress_clear_logs',    [ $this, 'handle_clear_logs' ] );
-		add_action( 'wp_ajax_fortress_stats',            [ $this, 'ajax_stats' ] );
-		add_action( 'wp_ajax_fortress_run_scan',         [ $this, 'ajax_run_scan' ] );
-		add_action( 'wp_ajax_fortress_dismiss_finding',  [ $this, 'ajax_dismiss_finding' ] );
+		add_action( 'admin_post_fortress_save_settings',          [ $this, 'handle_save_settings' ] );
+		add_action( 'admin_post_fortress_add_ip',                 [ $this, 'handle_add_ip' ] );
+		add_action( 'admin_post_fortress_remove_ip',              [ $this, 'handle_remove_ip' ] );
+		add_action( 'admin_post_fortress_toggle_ip',              [ $this, 'handle_toggle_ip' ] );
+		// Firewall — IP blacklist
+		add_action( 'admin_post_fortress_add_blacklist',          [ $this, 'handle_add_blacklist' ] );
+		add_action( 'admin_post_fortress_remove_blacklist',       [ $this, 'handle_remove_blacklist' ] );
+		// Firewall — username whitelist
+		add_action( 'admin_post_fortress_add_username_wl',        [ $this, 'handle_add_username_wl' ] );
+		add_action( 'admin_post_fortress_remove_username_wl',     [ $this, 'handle_remove_username_wl' ] );
+		// Logs — delete single entry
+		add_action( 'admin_post_fortress_delete_log',             [ $this, 'handle_delete_log' ] );
+		add_action( 'wp_ajax_fortress_test_discord',              [ $this, 'ajax_test_discord' ] );
+		add_action( 'admin_post_fortress_clear_logs',             [ $this, 'handle_clear_logs' ] );
+		add_action( 'wp_ajax_fortress_stats',                     [ $this, 'ajax_stats' ] );
+		add_action( 'wp_ajax_fortress_run_scan',                  [ $this, 'ajax_run_scan' ] );
+		add_action( 'wp_ajax_fortress_dismiss_finding',           [ $this, 'ajax_dismiss_finding' ] );
 	}
 
 	/* ── Menu ─────────────────────────────────────────────────────────── */
@@ -41,6 +49,7 @@ class Fortress_Admin {
 		add_submenu_page( 'fortress-security', 'Traffic Logs',  'Traffic Logs',  'manage_options', 'fortress-logs',        [ $this, 'page_logs' ] );
 		add_submenu_page( 'fortress-security', 'Security Scan', 'Security Scan', 'manage_options', 'fortress-scanner',     [ $this, 'page_scanner' ] );
 		add_submenu_page( 'fortress-security', 'IP Manager',    'IP Manager',    'manage_options', 'fortress-ip-manager',  [ $this, 'page_ip_manager' ] );
+		add_submenu_page( 'fortress-security', 'Firewall',      '🔥 Firewall',   'manage_options', 'fortress-firewall',    [ $this, 'page_firewall' ] );
 		add_submenu_page( 'fortress-security', 'Settings',      'Settings',      'manage_options', 'fortress-settings',    [ $this, 'page_settings' ] );
 	}
 
@@ -87,6 +96,11 @@ class Fortress_Admin {
 		include FORTRESS_PLUGIN_DIR . 'admin/views/scanner.php';
 	}
 
+	public function page_firewall() {
+		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Forbidden' );
+		include FORTRESS_PLUGIN_DIR . 'admin/views/firewall.php';
+	}
+
 	public function page_settings() {
 		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Forbidden' );
 		include FORTRESS_PLUGIN_DIR . 'admin/views/settings.php';
@@ -102,6 +116,7 @@ class Fortress_Admin {
 			'fortress_block_xmlrpc', 'fortress_logging_enabled',
 			'fortress_discord_enabled', 'fortress_discord_on_block',
 			'fortress_discord_on_login_fail', 'fortress_discord_on_scan', 'fortress_discord_on_brute',
+			'fortress_firewall_enabled', 'fortress_username_whitelist_enabled',
 		];
 		foreach ( $checkboxes as $key ) {
 			update_option( $key, isset( $_POST[ $key ] ) ? 1 : 0 );
@@ -199,7 +214,60 @@ class Fortress_Admin {
 		exit;
 	}
 
-	/* ── AJAX: live stats ─────────────────────────────────────────────── */
+	/* ── Handle: delete single log entry ──────────────────────────────── */
+	public function handle_delete_log() {
+		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Forbidden' );
+		check_admin_referer( 'fortress_delete_log' );
+		Fortress_DB::delete_log( (int) ( $_POST['log_id'] ?? 0 ) );
+		wp_safe_redirect( add_query_arg( [ 'page' => 'fortress-logs' ], admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	/* ── Handle: add to IP blacklist ───────────────────────────────────── */
+	public function handle_add_blacklist() {
+		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Forbidden' );
+		check_admin_referer( 'fortress_add_blacklist' );
+		$ip    = sanitize_text_field( wp_unslash( $_POST['ip_address'] ?? '' ) );
+		$label = sanitize_text_field( wp_unslash( $_POST['label']      ?? '' ) );
+		if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+			Fortress_DB::add_to_blacklist( $ip, $label, get_current_user_id() );
+		}
+		wp_safe_redirect( add_query_arg( [ 'page' => 'fortress-firewall', 'bl_added' => 1 ], admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	/* ── Handle: remove from IP blacklist ──────────────────────────────── */
+	public function handle_remove_blacklist() {
+		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Forbidden' );
+		check_admin_referer( 'fortress_remove_blacklist' );
+		Fortress_DB::remove_from_blacklist( (int) ( $_POST['entry_id'] ?? 0 ) );
+		wp_safe_redirect( add_query_arg( [ 'page' => 'fortress-firewall', 'bl_removed' => 1 ], admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	/* ── Handle: add username to whitelist ─────────────────────────────── */
+	public function handle_add_username_wl() {
+		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Forbidden' );
+		check_admin_referer( 'fortress_add_username_wl' );
+		$username = sanitize_user( wp_unslash( $_POST['username'] ?? '' ) );
+		$label    = sanitize_text_field( wp_unslash( $_POST['label'] ?? '' ) );
+		if ( $username ) {
+			Fortress_DB::add_to_username_whitelist( $username, $label, get_current_user_id() );
+		}
+		wp_safe_redirect( add_query_arg( [ 'page' => 'fortress-firewall', 'uw_added' => 1 ], admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	/* ── Handle: remove username from whitelist ────────────────────────── */
+	public function handle_remove_username_wl() {
+		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Forbidden' );
+		check_admin_referer( 'fortress_remove_username_wl' );
+		Fortress_DB::remove_from_username_whitelist( (int) ( $_POST['entry_id'] ?? 0 ) );
+		wp_safe_redirect( add_query_arg( [ 'page' => 'fortress-firewall', 'uw_removed' => 1 ], admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+
 	public function ajax_stats() {
 		check_ajax_referer( 'fortress_ajax', 'nonce' );
 		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Forbidden' );

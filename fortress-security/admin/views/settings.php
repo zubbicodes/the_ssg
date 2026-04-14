@@ -181,6 +181,36 @@ $o = function( $key, $default = 0 ) { return get_option( $key, $default ); };
 			</div>
 		</div>
 
+		<!-- Firewall -->
+		<div class="fort-card">
+			<div class="fort-card-header"><h3>🔥 Firewall</h3></div>
+			<div class="fort-settings-grid">
+				<div class="fort-setting-row">
+					<div class="fort-setting-info">
+						<strong>Enable IP Blacklist Firewall</strong>
+						<p>Block specifically-blacklisted IPs on <strong>every</strong> page of your site. Manage blacklisted IPs under the Firewall menu.</p>
+					</div>
+					<label class="fort-toggle">
+						<input type="checkbox" name="fortress_firewall_enabled" value="1" <?php checked( $o( 'fortress_firewall_enabled', 1 ), 1 ); ?>>
+						<span class="fort-toggle-slider"></span>
+					</label>
+				</div>
+				<div class="fort-setting-row">
+					<div class="fort-setting-info">
+						<strong>Enable Username Whitelist</strong>
+						<p>
+							Only whitelisted usernames may attempt to log in. Any other username → the attacker's IP is <strong>instantly blacklisted</strong>.
+							<br><strong style="color:#f59e0b">⚠️ Add your own username under Firewall first to avoid locking yourself out.</strong>
+						</p>
+					</div>
+					<label class="fort-toggle">
+						<input type="checkbox" name="fortress_username_whitelist_enabled" value="1" <?php checked( $o( 'fortress_username_whitelist_enabled', 0 ), 1 ); ?>>
+						<span class="fort-toggle-slider"></span>
+					</label>
+				</div>
+			</div>
+		</div>
+
 		<div style="padding: 8px 0">
 			<button type="submit" class="fort-btn blue fort-btn-lg">Save Settings</button>
 		</div>

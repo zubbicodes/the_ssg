@@ -77,19 +77,28 @@ class Fortress_Logger {
 
 	/* ── Login failure ────────────────────────────────────────────────── */
 	public function on_login_fail( $username ) {
-		$ip      = self::get_ip();
-		$uri     = '/wp-login.php';
-		$ua      = isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( $_SERVER['HTTP_USER_AGENT'], 0, 512 ) : '';
+		$ip  = self::get_ip();
+		$uri = '/wp-login.php';
+		$ua  = isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( $_SERVER['HTTP_USER_AGENT'], 0, 512 ) : '';
 
-		Fortress_DB::insert_log( [
-			'ip_address'     => $ip,
-			'request_method' => 'POST',
-			'request_uri'    => $uri,
-			'user_agent'     => $ua,
-			'is_suspicious'  => 1,
-			'threat_type'    => 'login_fail',
-			'threat_score'   => 30,
-		] );
+		// Skip if firewall's username-whitelist enforcement already logged this attempt
+		// (it sets a transient keyed by IP to signal it already created a log row)
+		$transient_key = 'fortress_bad_username_' . md5( $ip );
+		if ( get_transient( $transient_key ) ) {
+			delete_transient( $transient_key );
+			// Still run brute-force checks below
+		} else {
+			Fortress_DB::insert_log( [
+				'ip_address'         => $ip,
+				'request_method'     => 'POST',
+				'request_uri'        => $uri,
+				'user_agent'         => $ua,
+				'is_suspicious'      => 1,
+				'threat_type'        => 'login_fail',
+				'threat_score'       => 30,
+				'attempted_username' => sanitize_user( $username ),
+			] );
+		}
 
 		$threshold = (int) get_option( 'fortress_brute_threshold', 5 );
 		$window    = (int) get_option( 'fortress_brute_window',    10 );

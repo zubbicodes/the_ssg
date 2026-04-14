@@ -2,8 +2,8 @@
 /**
  * Plugin Name: The SSG
  * Plugin URI:  #
- * Description: Advanced WordPress security — registration lockdown, admin IP whitelist, full traffic logging with threat detection, and Discord alerts.
- * Version:     1.0.0
+ * Description: Advanced WordPress security — IP firewall (blacklist/whitelist), username login whitelist with auto-IP blocking, registration lockdown, admin IP whitelist, full traffic logging with threat detection, and Discord alerts.
+ * Version:     1.1.0
  * Author:      Stratonally Dev Team
  * License:     GPL v2 or later
  * Text Domain: the-ssg
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FORTRESS_VERSION',     '1.0.0' );
+define( 'FORTRESS_VERSION',     '1.1.0' );
 define( 'FORTRESS_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'FORTRESS_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
 define( 'FORTRESS_PLUGIN_FILE', __FILE__ );
